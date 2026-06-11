@@ -1,0 +1,102 @@
+{
+  "serverName": "[BR] ZERO [PVE] [CROSSPLAY]",
+  "ip": "37.148.132.54:2001",
+  "discord": "https://discord.gg/8d5gWANSjg",
+  "whatsapp": "https://chat.whatsapp.com/LaVFu4QcdalIb4DAo1I65L?mode=gi_t",
+  "instagram": "@ZERO.BRSERVER",
+  "currentMap": "Gogland",
+  "administracao": [
+    "H334DSHOT",
+    "Fernando!",
+    "o_CHACON_o",
+    "TrAcKs_BR",
+    "[ Piloto - Cabo ] Ana",
+    "FALCAO"
+  ],
+  "diretoria": [
+    "H334DSHOT",
+    "Fernando!",
+    "o_CHACON_o",
+    "TrAcKs_BR",
+    "SWAT"
+  ],
+  "voteMaps": [
+    "Anizay",
+    "Golden Gate",
+    "Kingdom",
+    "Everon",
+    "Serhiivka",
+    "Fallujah",
+    "Ruha Winter",
+    "Yellowstone"
+  ],
+  "rotation": [
+    "Anizay",
+    "Golden Gate",
+    "Kingdom",
+    "Everon",
+    "Serhiivka",
+    "Gogland",
+    "AL Hadra",
+    "Fallujah",
+    "Vietnam",
+    "Kolguyev",
+    "Yellowstone",
+    "Ruha Winter",
+    "Novka",
+    "Gulf Coast",
+    "Worthy Islands"
+  ],
+  "ranking": [
+    {
+      "name": "Ghost",
+      "kills": 1245,
+      "missions": 321,
+      "status": "ATIVO"
+    },
+    {
+      "name": "Falcon",
+      "kills": 1102,
+      "missions": 280,
+      "status": "ATIVO"
+    },
+    {
+      "name": "Reaper",
+      "kills": 986,
+      "missions": 243,
+      "status": "ATIVO"
+    },
+    {
+      "name": "Viking",
+      "kills": 874,
+      "missions": 212,
+      "status": "ATIVO"
+    },
+    {
+      "name": "Nomad",
+      "kills": 802,
+      "missions": 197,
+      "status": "ATIVO"
+    }
+  ],
+  "operatorWeek": {
+    "name": "Ghost",
+    "kills": 248,
+    "missions": 17,
+    "accuracy": "92%"
+  },
+  "news": [
+    {
+      "title": "Operação Atual: Gogland",
+      "text": "A ZERO PVE está em operação ativa no mapa Gogland."
+    },
+    {
+      "title": "Votação do Próximo Mapa",
+      "text": "A comunidade poderá escolher o próximo teatro de operações."
+    },
+    {
+      "title": "Comunidade ZERO",
+      "text": "Entre no Discord, WhatsApp e acompanhe o Instagram oficial."
+    }
+  ]
+}
