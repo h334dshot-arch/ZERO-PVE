@@ -98,3 +98,124 @@
         right:24px;
     }
 }
+
+/* ===== ZERO PVE - Live Players Layout ===== */
+.hero{
+    grid-template-columns:1fr 380px 310px;
+}
+
+.hero-status{
+    grid-template-columns:repeat(4,1fr);
+}
+
+.online-card{
+    background:linear-gradient(180deg,rgba(25,31,42,.92),rgba(12,16,22,.96));
+    border:1px solid rgba(214,171,63,.32);
+    box-shadow:0 25px 70px rgba(0,0,0,.42);
+    padding:26px;
+}
+
+.online-card h3{
+    color:var(--gold);
+    font-size:34px;
+    margin-bottom:18px;
+}
+
+.online-card h3 span{
+    color:var(--text);
+    font-size:24px;
+}
+
+.players-list{
+    list-style:none;
+    margin:0 0 18px;
+    padding:0;
+    border-top:1px solid rgba(255,255,255,.08);
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.players-list li{
+    padding:8px 0;
+    color:#e4e7ec;
+    font-weight:800;
+    border-bottom:1px solid rgba(255,255,255,.055);
+}
+
+.players-list li:last-child{
+    border-bottom:0;
+}
+
+.players-list li::before{
+    content:"• ";
+    color:var(--gold2);
+}
+
+.server-live-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.server-live-grid div{
+    background:rgba(0,0,0,.24);
+    border:1px solid rgba(255,255,255,.08);
+    padding:13px;
+}
+
+.server-live-grid small{
+    display:block;
+    color:var(--muted);
+    text-transform:uppercase;
+    font-size:10px;
+    letter-spacing:1.2px;
+    margin-bottom:7px;
+}
+
+.server-live-grid strong{
+    color:var(--text);
+    font-size:18px;
+}
+
+@media(max-width:1220px){
+    .hero{
+        grid-template-columns:1fr 360px;
+    }
+
+    .online-card{
+        grid-column:auto;
+    }
+
+    .side-stack{
+        grid-column:1 / -1;
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:950px){
+    .hero{
+        grid-template-columns:1fr;
+    }
+
+    .hero-status{
+        grid-template-columns:1fr;
+    }
+
+    .online-card{
+        order:2;
+    }
+
+    .side-stack{
+        order:3;
+        grid-template-columns:1fr;
+    }
+
+    .server-live-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:620px){
+    .server-live-grid{
+        grid-template-columns:1fr;
+    }
+}

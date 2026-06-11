@@ -1,1 +1,50 @@
-function toggleMenu(){const btn=document.getElementById("menuToggle"),nav=document.getElementById("nav");if(btn&&nav)btn.addEventListener("click",()=>nav.classList.toggle("open"));}function copyText(value){navigator.clipboard.writeText(value).then(()=>{const n=document.createElement("div");n.textContent="Copiado";n.style.position="fixed";n.style.bottom="92px";n.style.right="24px";n.style.background="#d6ab3f";n.style.color="#08090b";n.style.padding="10px 14px";n.style.fontWeight="900";n.style.zIndex="999";document.body.appendChild(n);setTimeout(()=>n.remove(),1200);});}function fillRanking(){const r=[{name:"Ghost",kills:1245,missions:321,status:"ATIVO"},{name:"Falcon",kills:1102,missions:280,status:"ATIVO"},{name:"Reaper",kills:986,missions:243,status:"ATIVO"},{name:"Viking",kills:874,missions:212,status:"ATIVO"},{name:"Nomad",kills:802,missions:197,status:"ATIVO"}];const t=document.getElementById("rankingBody");if(!t)return;r.forEach((p,i)=>{t.innerHTML+=`<tr><td>${i+1}</td><td><strong>${p.name}</strong></td><td>${p.kills}</td><td>${p.missions}</td><td class="status-active">${p.status}</td></tr>`})}toggleMenu();fillRanking();
+
+
+async function loadServerStats(){
+    try{
+        const response = await fetch("server-stats.json?cache=" + Date.now());
+        if(!response.ok) return;
+
+        const data = await response.json();
+
+        if(data.map){
+            const op = document.getElementById("operationName");
+            if(op) op.textContent = String(data.map).toUpperCase();
+        }
+
+        if(Array.isArray(data.players)){
+            const list = document.getElementById("playersList");
+            const count = document.getElementById("onlineCount");
+
+            if(list){
+                list.innerHTML = "";
+                data.players.forEach(player => {
+                    const li = document.createElement("li");
+                    li.textContent = player;
+                    list.appendChild(li);
+                });
+            }
+
+            if(count){
+                count.textContent = `(${data.players.length})`;
+            }
+        }
+
+        const fps = document.getElementById("serverFps");
+        const ai = document.getElementById("serverAi");
+        const vehicles = document.getElementById("serverVehicles");
+        const uptime = document.getElementById("serverUptime");
+        const updated = document.getElementById("statsUpdated");
+
+        if(fps && data.fps !== undefined) fps.textContent = data.fps;
+        if(ai && data.ai !== undefined) ai.textContent = data.ai;
+        if(vehicles && data.vehicles !== undefined) vehicles.textContent = data.vehicles;
+        if(uptime && data.uptime !== undefined) uptime.textContent = data.uptime;
+        if(updated && data.updatedAt) updated.textContent = data.updatedAt;
+    }catch(error){
+        // Mantém os dados estáticos se o JSON/API não responder.
+    }
+}
+
+loadServerStats();
+setInterval(loadServerStats, 30000);

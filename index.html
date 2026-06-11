@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -71,8 +70,53 @@
                         <small>IP</small>
                         <strong>37.148.132.54:2001</strong>
                     </div>
+
+                    <div>
+                        <small>Operação</small>
+                        <strong id="operationName">GOGLAND</strong>
+                    </div>
                 </div>
             </div>
+
+            <article class="online-card">
+                <div class="card-header">
+                    <span>Live Server Data</span>
+                    <b id="statsUpdated">Online</b>
+                </div>
+
+                <h3>Players Online <span id="onlineCount">(6)</span></h3>
+
+                <ul class="players-list" id="playersList">
+                    <li>TrAcKs_BR</li>
+                    <li>heverson84</li>
+                    <li>chzuge</li>
+                    <li>jonas-r</li>
+                    <li>SWAT</li>
+                    <li>Mclovinsc</li>
+                </ul>
+
+                <div class="server-live-grid">
+                    <div>
+                        <small>FPS</small>
+                        <strong id="serverFps">181</strong>
+                    </div>
+
+                    <div>
+                        <small>AI</small>
+                        <strong id="serverAi">45</strong>
+                    </div>
+
+                    <div>
+                        <small>Veículos</small>
+                        <strong id="serverVehicles">8</strong>
+                    </div>
+
+                    <div>
+                        <small>Uptime</small>
+                        <strong id="serverUptime">17h56m</strong>
+                    </div>
+                </div>
+            </article>
 
             <div class="side-stack">
                 <article class="staff-card">
@@ -99,26 +143,6 @@
                     </ul>
                 </article>
             </div>
-
-            <aside class="mission-card">
-                <div class="card-header">
-                    <span>Current Operation</span>
-                    <b>Live</b>
-                </div>
-
-                <h3>Gogland</h3>
-
-                <p>
-                    Mapa atual em operação. A próxima rotação será decidida por votação da comunidade.
-                </p>
-
-                <ul class="mission-list">
-                    <li>Servidor: [BR] ZERO [PVE] [CROSSPLAY]</li>
-                    <li>Modo: PvE Militar</li>
-                    <li>Players: 40 slots</li>
-                    <li>Crossplay: Ativo</li>
-                </ul>
-            </aside>
         </section>
 
         <section class="section">
@@ -168,7 +192,7 @@
             </div>
         </section>
 
-        <section class="section creators-section">
+        <section class="section">
             <div class="section-head">
                 <div>
                     <p class="section-kicker">Content Creators</p>
@@ -176,8 +200,8 @@
                 </div>
             </div>
 
-            <div class="creators-grid creators-grid-premium">
-                <article class="creator-card creator-card-premium">
+            <div class="creators-grid">
+                <article class="creator-card">
                     <div class="creator-video">
                         <iframe
                             src="https://www.youtube.com/embed/Fm8wzwjKW_A"
@@ -188,16 +212,16 @@
                         </iframe>
                     </div>
 
-                    <div class="creator-info">
-                        <small>Canal Oficial</small>
+                    <div>
+                        <div class="icon">▶</div>
                         <h3>H334DSHOT</h3>
-                        <p>Conteúdo oficial da ZERO PVE, operações, eventos e novidades do servidor.</p>
+                        <p>Canal oficial do ZERO PVE.</p>
                     </div>
 
-                    <a class="youtube-btn youtube-btn-premium" href="https://youtube.com/@H334DSHOT" target="_blank">Acessar Canal</a>
+                    <a class="youtube-btn" href="https://youtube.com/@H334DSHOT" target="_blank">YouTube</a>
                 </article>
 
-                <article class="creator-card creator-card-premium">
+                <article class="creator-card">
                     <div class="creator-video">
                         <iframe
                             src="https://www.youtube.com/embed/5yPY0Ic_flQ"
@@ -208,16 +232,16 @@
                         </iframe>
                     </div>
 
-                    <div class="creator-info">
-                        <small>Criador Parceiro</small>
+                    <div>
+                        <div class="icon">▶</div>
                         <h3>RodrigoBoosBR</h3>
-                        <p>Conteúdo parceiro, gameplay e operações em comunidade.</p>
+                        <p>Criador de conteúdo parceiro.</p>
                     </div>
 
-                    <a class="youtube-btn youtube-btn-premium" href="https://youtube.com/@RodrigoBoosBR" target="_blank">Acessar Canal</a>
+                    <a class="youtube-btn" href="https://youtube.com/@RodrigoBoosBR" target="_blank">YouTube</a>
                 </article>
 
-                <article class="creator-card creator-card-premium">
+                <article class="creator-card">
                     <div class="creator-video">
                         <iframe
                             src="https://www.youtube.com/embed/w8cMzW1ukr0"
@@ -228,16 +252,16 @@
                         </iframe>
                     </div>
 
-                    <div class="creator-info">
-                        <small>Criadora Parceira</small>
+                    <div>
+                        <div class="icon">▶</div>
                         <h3>anaplaygames</h3>
-                        <p>Gameplays, lives e conteúdo da comunidade ZERO PVE.</p>
+                        <p>Criadora de conteúdo parceira.</p>
                     </div>
 
-                    <a class="youtube-btn youtube-btn-premium" href="https://youtube.com/@anaplaygames" target="_blank">Acessar Canal</a>
+                    <a class="youtube-btn" href="https://youtube.com/@anaplaygames" target="_blank">YouTube</a>
                 </article>
 
-                <article class="creator-card creator-card-premium">
+                <article class="creator-card">
                     <div class="creator-video">
                         <iframe
                             src="https://www.youtube.com/embed/Bz4v5pVOWA0"
@@ -248,13 +272,13 @@
                         </iframe>
                     </div>
 
-                    <div class="creator-info">
-                        <small>Criador Parceiro</small>
+                    <div>
+                        <div class="icon">▶</div>
                         <h3>barretomaquinas7731</h3>
-                        <p>Lives, máquinas, gameplay e participação nas operações.</p>
+                        <p>Criador de conteúdo parceiro.</p>
                     </div>
 
-                    <a class="youtube-btn youtube-btn-premium" href="https://youtube.com/@barretomaquinas7731" target="_blank">Acessar Canal</a>
+                    <a class="youtube-btn" href="https://youtube.com/@barretomaquinas7731" target="_blank">YouTube</a>
                 </article>
             </div>
         </section>
@@ -300,4 +324,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-```
