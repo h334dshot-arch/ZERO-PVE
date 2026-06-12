@@ -1,10 +1,12 @@
 {
   "map": "Unknown",
-  "fps": 59,
-  "ai": 44,
+  "fps": 60,
+  "ai": 0,
   "vehicles": 5,
-  "uptime_seconds": 1001,
-  "uptime": "0h16m",
-  "updatedAt": "14:01",
-  "players": []
+  "uptime_seconds": 395,
+  "uptime": "0h06m",
+  "updatedAt": "14:13",
+  "players": [
+    "H334DSHOT"
+  ]
 }
