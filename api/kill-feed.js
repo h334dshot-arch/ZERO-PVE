@@ -38,25 +38,29 @@ async function githubRequest(url, options = {}) {
   return data;
 }
 
-async function readKillFeed() {
+async function readJsonFile(path, fallback) {
   if (!TOKEN) {
     throw new Error('Missing GITHUB_TOKEN in Vercel environment variables');
   }
 
-  const encodedPath = KILL_FEED_PATH.split('/').map(encodeURIComponent).join('/');
+  const encodedPath = path.split('/').map(encodeURIComponent).join('/');
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodedPath}`;
 
   try {
     const current = await githubRequest(`${url}?ref=${encodeURIComponent(BRANCH)}`);
     const json = Buffer.from(current.content || '', 'base64').toString('utf8');
-    const feed = JSON.parse(json);
-    return Array.isArray(feed) ? feed : [];
+    const data = JSON.parse(json);
+    return Array.isArray(data) ? data : fallback;
   } catch (error) {
     if (error.message.includes('GitHub 404')) {
-      return [];
+      return fallback;
     }
     throw error;
   }
+}
+
+async function readKillFeed() {
+  return readJsonFile(KILL_FEED_PATH, []);
 }
 
 function eventTime(event) {
@@ -148,12 +152,15 @@ export default async function handler(req, res) {
 
   try {
     const feed = await readKillFeed();
+    const weekly = buildRanking(feed, 7);
+    const monthly = buildRanking(feed, 30);
+
     return res.status(200).json({
       ok: true,
       updatedAt: new Date().toISOString(),
       feed: feed.slice(0, 100),
-      weekly: buildRanking(feed, 7),
-      monthly: buildRanking(feed, 30),
+      weekly,
+      monthly,
     });
   } catch (error) {
     console.error(error);

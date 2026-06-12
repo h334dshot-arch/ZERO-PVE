@@ -25,6 +25,9 @@ function normalizeStats(input) {
     vehicles: Number.isFinite(Number(body.vehicles ?? body.registered_vehicles))
       ? Math.round(Number(body.vehicles ?? body.registered_vehicles))
       : 0,
+    uptime_seconds: Number.isFinite(Number(body.uptime_seconds ?? body.uptimeSeconds))
+      ? Math.max(0, Math.round(Number(body.uptime_seconds ?? body.uptimeSeconds)))
+      : 0,
     uptime: String(body.uptime || formatUptime(Number(body.uptime_seconds || 0))),
     updatedAt: new Date().toLocaleTimeString('pt-BR', {
       timeZone: 'America/Sao_Paulo',
@@ -170,15 +173,72 @@ function normalizeKill(input) {
     distance: String(body.distance || '0'),
     teamKill: Boolean(body.teamKill ?? body.team_kill),
     friendlyFire: Boolean(body.friendlyFire ?? body.friendly_fire),
+    uptimeSeconds: Number.isFinite(Number(body.uptime_seconds ?? body.uptimeSeconds))
+      ? Math.max(0, Math.round(Number(body.uptime_seconds ?? body.uptimeSeconds)))
+      : null,
   };
+}
+
+function isKnownMap(map) {
+  const value = String(map || '').trim().toLowerCase();
+  return Boolean(value && value !== 'unknown');
+}
+
+function shouldResetKillFeed(previousStats, nextStats) {
+  if (!previousStats || !nextStats) {
+    return false;
+  }
+
+  const previousUptime = Number(previousStats.uptime_seconds ?? previousStats.uptimeSeconds ?? 0);
+  const nextUptime = Number(nextStats.uptime_seconds ?? nextStats.uptimeSeconds ?? 0);
+  if (Number.isFinite(previousUptime) && Number.isFinite(nextUptime) && nextUptime + 120 < previousUptime) {
+    return true;
+  }
+
+  if (isKnownMap(previousStats.map) && isKnownMap(nextStats.map) && previousStats.map !== nextStats.map) {
+    return true;
+  }
+
+  return false;
+}
+
+async function resetKillFeedForNewSession(nextStats, preserveNewUptimeEvents) {
+  if (!preserveNewUptimeEvents) {
+    await writeGitHubJson(KILL_FEED_PATH, [], 'Reset kill feed for new session');
+    return;
+  }
+
+  const current = await readGitHubJson(KILL_FEED_PATH, []);
+  const feed = Array.isArray(current) ? current : [];
+  const nextUptime = Number(nextStats.uptime_seconds ?? nextStats.uptimeSeconds ?? 0);
+  const preserved = feed.filter((event) => {
+    const eventUptime = Number(event.uptimeSeconds);
+    return Number.isFinite(eventUptime) && eventUptime <= nextUptime + 120;
+  });
+
+  await writeGitHubJson(KILL_FEED_PATH, preserved.slice(0, 5000), 'Reset kill feed for new session');
+}
+
+function shouldResetKillFeedForEvent(event, feed) {
+  if (!event || !Array.isArray(feed) || !feed.length || event.uptimeSeconds === null) {
+    return false;
+  }
+
+  const latest = feed.find((item) => Number.isFinite(Number(item.uptimeSeconds)));
+  if (!latest) {
+    return false;
+  }
+
+  return event.uptimeSeconds + 120 < Number(latest.uptimeSeconds);
 }
 
 async function appendKillEvent(input) {
   const event = normalizeKill(input);
   const current = await readGitHubJson(KILL_FEED_PATH, []);
   const feed = Array.isArray(current) ? current : [];
-  feed.unshift(event);
-  await writeGitHubJson(KILL_FEED_PATH, feed.slice(0, 5000), 'Update kill feed');
+  const nextFeed = shouldResetKillFeedForEvent(event, feed) ? [] : feed;
+  nextFeed.unshift(event);
+  await writeGitHubJson(KILL_FEED_PATH, nextFeed.slice(0, 5000), 'Update kill feed');
   return event;
 }
 
@@ -219,7 +279,14 @@ export default async function handler(req, res) {
     }
 
     const stats = normalizeStats(body);
+    const previousStats = await readGitHubFile().catch(() => null);
     await updateGitHubFile(stats);
+    if (shouldResetKillFeed(previousStats, stats)) {
+      const previousUptime = Number(previousStats?.uptime_seconds ?? previousStats?.uptimeSeconds ?? 0);
+      const nextUptime = Number(stats.uptime_seconds ?? stats.uptimeSeconds ?? 0);
+      const restarted = Number.isFinite(previousUptime) && Number.isFinite(nextUptime) && nextUptime + 120 < previousUptime;
+      await resetKillFeedForNewSession(stats, restarted);
+    }
     return res.status(200).json({ ok: true, stats });
   } catch (error) {
     console.error(error);
