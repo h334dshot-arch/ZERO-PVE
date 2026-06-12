@@ -1,5 +1,20 @@
 [
   {
+    "id": "1781240151948-c65eyg",
+    "eventType": "player_killed",
+    "receivedAt": "2026-06-12T04:55:51.948Z",
+    "timestamp": "1781240151",
+    "killerName": "AI",
+    "killerGUID": "AI",
+    "victimName": "H334DSHOT",
+    "victimGUID": "d0de2e97-cbeb-4d9b-a8cb-80065f6e1eb7",
+    "weapon": "AK-74M",
+    "vehicleName": "",
+    "distance": "14.66",
+    "teamKill": false,
+    "friendlyFire": false
+  },
+  {
     "id": "1781238839398-hq8yw2",
     "eventType": "player_killed",
     "receivedAt": "2026-06-12T04:33:59.398Z",
