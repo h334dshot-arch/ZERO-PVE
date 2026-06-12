@@ -136,7 +136,7 @@ function renderKillData(data){
 }
 
 async function loadKillFeed(){
-    if(!document.getElementById("rankingBody")) return;
+    if(!document.getElementById("rankingBody") && !document.getElementById("weeklyTopName")) return;
 
     try{
         const response = await fetch("/api/kill-feed?cache=" + Date.now());
