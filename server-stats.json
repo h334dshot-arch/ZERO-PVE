@@ -1,10 +1,10 @@
 {
   "map": "Unknown",
-  "fps": 59,
-  "ai": 1,
-  "vehicles": 5,
-  "uptime_seconds": 996,
-  "uptime": "0h16m",
-  "updatedAt": "14:23",
+  "fps": 60,
+  "ai": 0,
+  "vehicles": 4,
+  "uptime_seconds": 1296,
+  "uptime": "0h21m",
+  "updatedAt": "14:28",
   "players": []
 }
