@@ -1,17 +1,1 @@
-[
-  {
-    "id": "1781232082248-jjeokg",
-    "eventType": "player_killed",
-    "receivedAt": "2026-06-12T02:41:22.249Z",
-    "timestamp": "2026-06-12T02:40:14.549Z",
-    "killerName": "CodexTester",
-    "killerGUID": "codex-guid",
-    "victimName": "TargetDummy",
-    "victimGUID": "dummy-guid",
-    "weapon": "Test Rifle",
-    "vehicleName": "",
-    "distance": "123",
-    "teamKill": false,
-    "friendlyFire": false
-  }
-]
+[]
