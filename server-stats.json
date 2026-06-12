@@ -1,11 +1,11 @@
 {
-  "map": "Codex Test",
+  "map": "Unknown",
   "fps": 60,
-  "ai": 1,
-  "vehicles": 2,
-  "uptime": "0h05m",
-  "updatedAt": "23:14",
+  "ai": 76,
+  "vehicles": 5,
+  "uptime": "0h21m",
+  "updatedAt": "23:18",
   "players": [
-    "Teste"
+    "H334DSHOT"
   ]
 }
