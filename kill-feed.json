@@ -1,5 +1,21 @@
 [
   {
+    "id": "1781242696278-hbhqr1",
+    "eventType": "player_killed",
+    "receivedAt": "2026-06-12T05:38:16.278Z",
+    "timestamp": "1781242696",
+    "killerName": "AI",
+    "killerGUID": "AI",
+    "victimName": "H334DSHOT",
+    "victimGUID": "d0de2e97-cbeb-4d9b-a8cb-80065f6e1eb7",
+    "weapon": "PKP Pecheneg",
+    "vehicleName": "",
+    "distance": "4.44",
+    "teamKill": false,
+    "friendlyFire": false,
+    "uptimeSeconds": 864
+  },
+  {
     "id": "1781240151948-c65eyg",
     "eventType": "player_killed",
     "receivedAt": "2026-06-12T04:55:51.948Z",
