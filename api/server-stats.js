@@ -109,15 +109,34 @@ async function updateGitHubFile(stats) {
   });
 }
 
+async function readGitHubFile() {
+  if (!TOKEN) {
+    throw new Error('Missing GITHUB_TOKEN in Vercel environment variables');
+  }
+
+  const encodedPath = FILE_PATH.split('/').map(encodeURIComponent).join('/');
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodedPath}`;
+  const current = await githubRequest(`${url}?ref=${encodeURIComponent(BRANCH)}`);
+  const json = Buffer.from(current.content || '', 'base64').toString('utf8');
+  return JSON.parse(json);
+}
+
 export default async function handler(req, res) {
   setCors(res);
+  res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
   }
 
   if (req.method === 'GET') {
-    return res.status(200).json({ ok: true, endpoint: '/api/server-stats' });
+    try {
+      const stats = await readGitHubFile();
+      return res.status(200).json(stats);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ ok: false, error: error.message });
+    }
   }
 
   if (req.method !== 'POST') {

@@ -2,7 +2,7 @@
 
 async function loadServerStats(){
     try{
-        const response = await fetch("server-stats.json?cache=" + Date.now());
+        const response = await fetch("/api/server-stats?cache=" + Date.now());
         if(!response.ok) return;
 
         const data = await response.json();
