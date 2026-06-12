@@ -48,3 +48,114 @@ async function loadServerStats(){
 
 loadServerStats();
 setInterval(loadServerStats, 30000);
+
+let currentRankPeriod = "weekly";
+let cachedKillData = null;
+
+function setText(id, value){
+    const el = document.getElementById(id);
+    if(el) el.textContent = value;
+}
+
+function formatKillTime(value){
+    const date = new Date(value);
+    if(Number.isNaN(date.getTime())) return "--:--";
+    return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function renderTopCards(data){
+    const weekly = data.weekly && data.weekly[0];
+    const monthly = data.monthly && data.monthly[0];
+
+    setText("weeklyTopName", weekly ? weekly.name : "Aguardando");
+    setText("weeklyTopKills", weekly ? weekly.kills : "0");
+    setText("weeklyTopDeaths", weekly ? weekly.deaths : "0");
+
+    setText("monthlyTopName", monthly ? monthly.name : "Aguardando");
+    setText("monthlyTopKills", monthly ? monthly.kills : "0");
+    setText("monthlyTopDeaths", monthly ? monthly.deaths : "0");
+}
+
+function renderRankingTable(data){
+    const body = document.getElementById("rankingBody");
+    if(!body) return;
+
+    const rows = data[currentRankPeriod] || [];
+    if(!rows.length){
+        body.innerHTML = '<tr><td colspan="6">Aguardando kill feed...</td></tr>';
+        return;
+    }
+
+    body.innerHTML = "";
+    rows.forEach((player, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${player.name}</td>
+            <td>${player.kills}</td>
+            <td>${player.deaths}</td>
+            <td>${player.teamKills}</td>
+            <td><span class="status-active">${player.score}</span></td>
+        `;
+        body.appendChild(tr);
+    });
+}
+
+function renderKillFeed(data){
+    const list = document.getElementById("killFeedList");
+    if(!list) return;
+
+    const feed = data.feed || [];
+    if(!feed.length){
+        list.innerHTML = '<article class="kill-feed-item">Aguardando eventos...</article>';
+        return;
+    }
+
+    list.innerHTML = "";
+    feed.slice(0, 30).forEach(event => {
+        const item = document.createElement("article");
+        item.className = "kill-feed-item";
+        const tag = event.teamKill ? "TEAM KILL" : "KILL";
+        item.innerHTML = `
+            <div>
+                <strong>${event.killerName}</strong>
+                <span>${tag} em ${event.victimName}</span>
+            </div>
+            <small>${event.weapon || "Unknown"} - ${event.distance || "0"}m - ${formatKillTime(event.receivedAt || event.timestamp)}</small>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function renderKillData(data){
+    cachedKillData = data;
+    renderTopCards(data);
+    renderRankingTable(data);
+    renderKillFeed(data);
+    setText("rankingUpdated", "Atualizado " + formatKillTime(data.updatedAt));
+}
+
+async function loadKillFeed(){
+    if(!document.getElementById("rankingBody")) return;
+
+    try{
+        const response = await fetch("/api/kill-feed?cache=" + Date.now());
+        if(!response.ok) return;
+        const data = await response.json();
+        renderKillData(data);
+    }catch(error){
+        // Mantem os dados estaticos se a API nao responder.
+    }
+}
+
+document.querySelectorAll("[data-rank-period]").forEach(button => {
+    button.addEventListener("click", () => {
+        currentRankPeriod = button.dataset.rankPeriod;
+        document.querySelectorAll("[data-rank-period]").forEach(tab => tab.classList.remove("active"));
+        button.classList.add("active");
+        if(cachedKillData) renderRankingTable(cachedKillData);
+    });
+});
+
+loadKillFeed();
+setInterval(loadKillFeed, 30000);

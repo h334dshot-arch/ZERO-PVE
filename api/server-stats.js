@@ -2,6 +2,7 @@
 const REPO = process.env.GITHUB_REPO || 'ZERO-PVE';
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
 const FILE_PATH = process.env.GITHUB_STATS_PATH || 'server-stats.json';
+const KILL_FEED_PATH = process.env.GITHUB_KILL_FEED_PATH || 'kill-feed.json';
 const TOKEN = process.env.GITHUB_TOKEN;
 const API_SECRET = process.env.STATS_API_SECRET || '';
 
@@ -92,21 +93,7 @@ async function updateGitHubFile(stats) {
     throw new Error('Missing GITHUB_TOKEN in Vercel environment variables');
   }
 
-  const encodedPath = FILE_PATH.split('/').map(encodeURIComponent).join('/');
-  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodedPath}`;
-  const current = await githubRequest(`${url}?ref=${encodeURIComponent(BRANCH)}`);
-  const content = Buffer.from(`${JSON.stringify(stats, null, 2)}\n`, 'utf8').toString('base64');
-
-  await githubRequest(url, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: 'Update server stats',
-      content,
-      sha: current.sha,
-      branch: BRANCH,
-    }),
-  });
+  await writeGitHubJson(FILE_PATH, stats, 'Update server stats');
 }
 
 async function readGitHubFile() {
@@ -114,11 +101,85 @@ async function readGitHubFile() {
     throw new Error('Missing GITHUB_TOKEN in Vercel environment variables');
   }
 
-  const encodedPath = FILE_PATH.split('/').map(encodeURIComponent).join('/');
+  return readGitHubJson(FILE_PATH);
+}
+
+async function readGitHubJson(path, fallback = null) {
+  const encodedPath = path.split('/').map(encodeURIComponent).join('/');
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodedPath}`;
-  const current = await githubRequest(`${url}?ref=${encodeURIComponent(BRANCH)}`);
+  let current = null;
+
+  try {
+    current = await githubRequest(`${url}?ref=${encodeURIComponent(BRANCH)}`);
+  } catch (error) {
+    if (fallback !== null && error.message.includes('GitHub 404')) {
+      return fallback;
+    }
+    throw error;
+  }
+
   const json = Buffer.from(current.content || '', 'base64').toString('utf8');
   return JSON.parse(json);
+}
+
+async function writeGitHubJson(path, data, message) {
+  const encodedPath = path.split('/').map(encodeURIComponent).join('/');
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodedPath}`;
+  let sha = null;
+
+  try {
+    const current = await githubRequest(`${url}?ref=${encodeURIComponent(BRANCH)}`);
+    sha = current.sha;
+  } catch (error) {
+    if (!error.message.includes('GitHub 404')) {
+      throw error;
+    }
+  }
+
+  const content = Buffer.from(`${JSON.stringify(data, null, 2)}\n`, 'utf8').toString('base64');
+  const body = {
+    message,
+    content,
+    branch: BRANCH,
+  };
+
+  if (sha) {
+    body.sha = sha;
+  }
+
+  await githubRequest(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+function normalizeKill(input) {
+  const body = input && typeof input === 'object' ? input : {};
+  return {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    eventType: 'player_killed',
+    receivedAt: new Date().toISOString(),
+    timestamp: String(body.timestamp || new Date().toISOString()),
+    killerName: String(body.killerName || body.killer_name || 'Unknown'),
+    killerGUID: String(body.killerGUID || body.killer_guid || ''),
+    victimName: String(body.victimName || body.victim_name || 'Unknown'),
+    victimGUID: String(body.victimGUID || body.victim_guid || ''),
+    weapon: String(body.weapon || 'Unknown'),
+    vehicleName: String(body.vehicleName || body.vehicle_name || ''),
+    distance: String(body.distance || '0'),
+    teamKill: Boolean(body.teamKill ?? body.team_kill),
+    friendlyFire: Boolean(body.friendlyFire ?? body.friendly_fire),
+  };
+}
+
+async function appendKillEvent(input) {
+  const event = normalizeKill(input);
+  const current = await readGitHubJson(KILL_FEED_PATH, []);
+  const feed = Array.isArray(current) ? current : [];
+  feed.unshift(event);
+  await writeGitHubJson(KILL_FEED_PATH, feed.slice(0, 5000), 'Update kill feed');
+  return event;
 }
 
 export default async function handler(req, res) {
@@ -152,6 +213,11 @@ export default async function handler(req, res) {
 
   try {
     const body = await readBody(req);
+    if (body.eventType === 'player_killed' || body.event_type === 'player_killed') {
+      const kill = await appendKillEvent(body);
+      return res.status(200).json({ ok: true, kill });
+    }
+
     const stats = normalizeStats(body);
     await updateGitHubFile(stats);
     return res.status(200).json({ ok: true, stats });

@@ -1,1 +1,100 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Ranking | ZERO PVE</title><link rel="stylesheet" href="style.css"></head><body><div class="noise"></div><div class="scanline"></div><header class="site-header"><a href="index.html" class="brand"><span>ZERO</span><strong>PVE</strong></a><button class="menu-toggle" id="menuToggle">☰</button><nav class="nav" id="nav"><a href="index.html">Home</a><a href="ranking.html">Ranking</a><a href="mapas.html">Mapas</a><a href="galeria.html">Galeria</a><a href="regras.html">Regras</a><a href="como-entrar.html">Como Entrar</a><a href="comunidade.html">Comunidade</a><a href="faq.html">FAQ</a><a class="nav-cta" href="https://discord.gg/8d5gWANSjg" target="_blank">Discord</a></nav></header><main><section class="page-hero"><p class="eyebrow">Combat Records</p><h1>Ranking</h1><p>Top kills e registros de desempenho dos operadores ZERO PVE.</p></section><section class="section"><div class="top-grid" style="margin-bottom:24px"><article class="top-card"><small>Top 1 da Semana</small><h3>Ghost</h3><div class="top-stats"><div><strong>248</strong><span>Kills</span></div><div><strong>17</strong><span>Missões</span></div></div></article><article class="top-card"><small>Top 1 do Mês</small><h3>Falcon</h3><div class="top-stats"><div><strong>1102</strong><span>Kills</span></div><div><strong>280</strong><span>Missões</span></div></div></article></div><div class="rank-table-wrap"><table class="rank-table"><thead><tr><th>#</th><th>Operador</th><th>Kills</th><th>Missões</th><th>Status</th></tr></thead><tbody id="rankingBody"></tbody></table></div></section></main><a class="whatsapp-float" href="https://chat.whatsapp.com/LaVFu4QcdalIb4DAo1I65L?mode=gi_t" target="_blank">Whats</a><footer class="footer"><strong>ZERO PVE</strong><span>Developed by H334DSHOT</span></footer><script src="script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking | ZERO PVE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="scanline"></div>
+
+    <header class="site-header">
+        <a href="index.html" class="brand"><span>ZERO</span><strong>PVE</strong></a>
+        <button class="menu-toggle" id="menuToggle">Menu</button>
+        <nav class="nav" id="nav">
+            <a href="index.html">Home</a>
+            <a href="ranking.html">Ranking</a>
+            <a href="mapas.html">Mapas</a>
+            <a href="galeria.html">Galeria</a>
+            <a href="regras.html">Regras</a>
+            <a href="como-entrar.html">Como Entrar</a>
+            <a href="comunidade.html">Comunidade</a>
+            <a href="faq.html">FAQ</a>
+            <a class="nav-cta" href="https://discord.gg/8d5gWANSjg" target="_blank">Discord</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <p class="eyebrow">Combat Records</p>
+            <h1>Ranking</h1>
+            <p>Top kills semanal e mensal calculados automaticamente pelo kill feed do servidor.</p>
+        </section>
+
+        <section class="section">
+            <div class="top-grid" style="margin-bottom:24px">
+                <article class="top-card">
+                    <small>Top 1 da Semana</small>
+                    <h3 id="weeklyTopName">Aguardando</h3>
+                    <div class="top-stats">
+                        <div><strong id="weeklyTopKills">0</strong><span>Kills</span></div>
+                        <div><strong id="weeklyTopDeaths">0</strong><span>Deaths</span></div>
+                    </div>
+                </article>
+                <article class="top-card">
+                    <small>Top 1 do Mes</small>
+                    <h3 id="monthlyTopName">Aguardando</h3>
+                    <div class="top-stats">
+                        <div><strong id="monthlyTopKills">0</strong><span>Kills</span></div>
+                        <div><strong id="monthlyTopDeaths">0</strong><span>Deaths</span></div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="rank-toolbar">
+                <button class="rank-tab active" type="button" data-rank-period="weekly">Semana</button>
+                <button class="rank-tab" type="button" data-rank-period="monthly">Mes</button>
+                <span id="rankingUpdated">Aguardando dados</span>
+            </div>
+
+            <div class="rank-table-wrap">
+                <table class="rank-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Operador</th>
+                            <th>Kills</th>
+                            <th>Deaths</th>
+                            <th>TK</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingBody">
+                        <tr><td colspan="6">Aguardando kill feed...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-head">
+                <div>
+                    <p class="section-kicker">Live Feed</p>
+                    <h2>Kill Feed</h2>
+                </div>
+                <p class="section-sub">Ultimos eventos recebidos pela API do site.</p>
+            </div>
+
+            <div class="kill-feed-list" id="killFeedList">
+                <article class="kill-feed-item">Aguardando eventos...</article>
+            </div>
+        </section>
+    </main>
+
+    <a class="whatsapp-float" href="https://chat.whatsapp.com/LaVFu4QcdalIb4DAo1I65L?mode=gi_t" target="_blank">Whats</a>
+    <footer class="footer"><strong>ZERO PVE</strong><span>Developed by H334DSHOT</span></footer>
+    <script src="script.js"></script>
+</body>
+</html>
