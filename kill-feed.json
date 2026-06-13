@@ -1,5 +1,24 @@
 [
   {
+    "id": "1781383847153-14fd05",
+    "eventType": "player_killed",
+    "receivedAt": "2026-06-13T20:50:47.153Z",
+    "timestamp": "1781383847",
+    "killerName": "H334DSHOT",
+    "killerGUID": "d0de2e97-cbeb-4d9b-a8cb-80065f6e1eb7",
+    "victimName": "AI",
+    "victimGUID": "AI",
+    "weapon": "XP Reward",
+    "vehicleName": "",
+    "distance": "0",
+    "teamKill": false,
+    "friendlyFire": false,
+    "suicide": false,
+    "killerType": "player",
+    "victimType": "ai",
+    "uptimeSeconds": 851
+  },
+  {
     "id": "1781339643667-90acdq",
     "eventType": "player_killed",
     "receivedAt": "2026-06-13T08:34:03.667Z",
