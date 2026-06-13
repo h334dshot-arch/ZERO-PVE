@@ -2,11 +2,13 @@
   "map": "ZERO GoldenGate PvE",
   "operation": "ZERO GoldenGate PvE",
   "sessionKey": "zero goldengate pve",
-  "fps": 60,
-  "ai": 32,
+  "fps": 61,
+  "ai": 52,
   "vehicles": 4,
-  "uptime_seconds": 2524,
-  "uptime": "0h42m",
-  "updatedAt": "19:24",
-  "players": []
+  "uptime_seconds": 2824,
+  "uptime": "0h47m",
+  "updatedAt": "19:29",
+  "players": [
+    "H334DSHOT"
+  ]
 }
