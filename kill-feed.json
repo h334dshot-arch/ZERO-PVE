@@ -1,18 +1,1 @@
-[
-  {
-    "id": "1781335349029-hbgb0d",
-    "eventType": "player_killed",
-    "receivedAt": "2026-06-13T07:22:29.029Z",
-    "timestamp": "1781335348",
-    "killerName": "AI",
-    "killerGUID": "AI",
-    "victimName": "H334DSHOT",
-    "victimGUID": "d0de2e97-cbeb-4d9b-a8cb-80065f6e1eb7",
-    "weapon": "PKM",
-    "vehicleName": "",
-    "distance": "131.77",
-    "teamKill": false,
-    "friendlyFire": false,
-    "uptimeSeconds": 751
-  }
-]
+[]
