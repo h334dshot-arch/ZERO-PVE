@@ -159,24 +159,67 @@ async function writeGitHubJson(path, data, message) {
 
 function normalizeKill(input) {
   const body = input && typeof input === 'object' ? input : {};
+  const killerName = String(body.killerName || body.killer_name || 'Unknown');
+  const killerGUID = String(body.killerGUID || body.killer_guid || '');
+  const victimName = String(body.victimName || body.victim_name || 'Unknown');
+  const victimGUID = String(body.victimGUID || body.victim_guid || '');
+  const suicide = isSamePlayer(killerGUID, victimGUID, killerName, victimName);
+  const teamKill = parseBool(body.teamKill ?? body.team_kill);
+  const friendlyFire = parseBool(body.friendlyFire ?? body.friendly_fire);
+
   return {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     eventType: 'player_killed',
     receivedAt: new Date().toISOString(),
     timestamp: String(body.timestamp || new Date().toISOString()),
-    killerName: String(body.killerName || body.killer_name || 'Unknown'),
-    killerGUID: String(body.killerGUID || body.killer_guid || ''),
-    victimName: String(body.victimName || body.victim_name || 'Unknown'),
-    victimGUID: String(body.victimGUID || body.victim_guid || ''),
+    killerName,
+    killerGUID,
+    victimName,
+    victimGUID,
     weapon: String(body.weapon || 'Unknown'),
     vehicleName: String(body.vehicleName || body.vehicle_name || ''),
     distance: String(body.distance || '0'),
-    teamKill: Boolean(body.teamKill ?? body.team_kill),
-    friendlyFire: Boolean(body.friendlyFire ?? body.friendly_fire),
+    teamKill,
+    friendlyFire,
+    suicide,
+    killerType: getActorType(killerGUID, killerName),
+    victimType: getActorType(victimGUID, victimName),
     uptimeSeconds: Number.isFinite(Number(body.uptime_seconds ?? body.uptimeSeconds))
       ? Math.max(0, Math.round(Number(body.uptime_seconds ?? body.uptimeSeconds)))
       : null,
   };
+}
+
+function parseBool(value) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value !== 0;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on';
+  }
+  return false;
+}
+
+function normalizeActor(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function getActorType(guid, name) {
+  const id = normalizeActor(guid || name);
+  if (!id) return 'unknown';
+  if (id === 'ai') return 'ai';
+  if (id === 'world') return 'world';
+  return 'player';
+}
+
+function isSamePlayer(killerGUID, victimGUID, killerName, victimName) {
+  const kg = normalizeActor(killerGUID);
+  const vg = normalizeActor(victimGUID);
+  if (kg && vg && kg === vg && kg !== 'ai' && kg !== 'world') return true;
+
+  const kn = normalizeActor(killerName);
+  const vn = normalizeActor(victimName);
+  return Boolean(kn && vn && kn === vn && kn !== 'ai' && kn !== 'world');
 }
 
 function isKnownMap(map) {

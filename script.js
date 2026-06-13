@@ -115,7 +115,16 @@ function renderKillFeed(data){
     feed.slice(0, 30).forEach(event => {
         const item = document.createElement("article");
         item.className = "kill-feed-item";
-        const tag = event.teamKill ? "TEAM KILL" : "KILL";
+        let tag = "KILL";
+        if(event.suicide){
+            tag = "SUICIDIO";
+        }else if(event.teamKill){
+            tag = "TEAM KILL";
+        }else if(event.victimType === "ai"){
+            tag = "KILL AI";
+        }else if(event.killerType === "ai"){
+            tag = "AI KILL";
+        }
         item.innerHTML = `
             <div>
                 <strong>${event.killerName}</strong>

@@ -68,65 +68,82 @@ function eventTime(event) {
   return Number.isFinite(value) ? value : 0;
 }
 
+function normalizeActor(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function actorType(guid, name) {
+  const id = normalizeActor(guid || name);
+  if (!id) return 'unknown';
+  if (id === 'ai') return 'ai';
+  if (id === 'world') return 'world';
+  return 'player';
+}
+
+function isPlayer(guid, name) {
+  return actorType(guid, name) === 'player';
+}
+
+function isSuicide(event) {
+  if (event.suicide === true) return true;
+
+  const killerGUID = normalizeActor(event.killerGUID);
+  const victimGUID = normalizeActor(event.victimGUID);
+  if (killerGUID && victimGUID && killerGUID === victimGUID && killerGUID !== 'ai' && killerGUID !== 'world') {
+    return true;
+  }
+
+  const killerName = normalizeActor(event.killerName);
+  const victimName = normalizeActor(event.victimName);
+  return Boolean(killerName && victimName && killerName === victimName && killerName !== 'ai' && killerName !== 'world');
+}
+
+function getPlayerKey(guid, name) {
+  if (!isPlayer(guid, name)) return '';
+  return guid || name || '';
+}
+
+function getOrCreatePlayer(players, key, name, guid) {
+  const current = players.get(key) || {
+    name: name || 'Unknown',
+    guid: guid || '',
+    kills: 0,
+    deaths: 0,
+    teamKills: 0,
+  };
+
+  current.name = name || current.name;
+  current.guid = guid || current.guid;
+  players.set(key, current);
+  return current;
+}
+
 function buildRanking(feed, days) {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
   const players = new Map();
-
-  for (const event of feed) {
-    if (eventTime(event) < cutoff || event.teamKill) {
-      continue;
-    }
-
-    const key = event.killerGUID || event.killerName;
-    if (!key || key === 'AI' || key === 'World') {
-      continue;
-    }
-
-    const current = players.get(key) || {
-      name: event.killerName || 'Unknown',
-      guid: event.killerGUID || '',
-      kills: 0,
-      deaths: 0,
-      teamKills: 0,
-    };
-
-    current.name = event.killerName || current.name;
-    current.kills += 1;
-    players.set(key, current);
-  }
 
   for (const event of feed) {
     if (eventTime(event) < cutoff) {
       continue;
     }
 
-    const victimKey = event.victimGUID || event.victimName;
-    if (victimKey && victimKey !== 'AI' && victimKey !== 'World') {
-      const victim = players.get(victimKey) || {
-        name: event.victimName || 'Unknown',
-        guid: event.victimGUID || '',
-        kills: 0,
-        deaths: 0,
-        teamKills: 0,
-      };
-      victim.name = event.victimName || victim.name;
-      victim.deaths += 1;
-      players.set(victimKey, victim);
+    const killerKey = getPlayerKey(event.killerGUID, event.killerName);
+    const victimKey = getPlayerKey(event.victimGUID, event.victimName);
+    const suicide = isSuicide(event);
+
+    if (killerKey && !event.teamKill && !suicide) {
+      const killer = getOrCreatePlayer(players, killerKey, event.killerName, event.killerGUID);
+      killer.kills += 1;
     }
 
-    if (event.teamKill) {
-      const killerKey = event.killerGUID || event.killerName;
-      if (killerKey && killerKey !== 'AI' && killerKey !== 'World') {
-        const killer = players.get(killerKey) || {
-          name: event.killerName || 'Unknown',
-          guid: event.killerGUID || '',
-          kills: 0,
-          deaths: 0,
-          teamKills: 0,
-        };
-        killer.teamKills += 1;
-        players.set(killerKey, killer);
-      }
+    if (victimKey) {
+      const victim = getOrCreatePlayer(players, victimKey, event.victimName, event.victimGUID);
+      victim.deaths += 1;
+    }
+
+    if (killerKey && event.teamKill) {
+      const killer = getOrCreatePlayer(players, killerKey, event.killerName, event.killerGUID);
+      killer.teamKills += 1;
     }
   }
 
@@ -135,7 +152,7 @@ function buildRanking(feed, days) {
       ...player,
       score: player.kills - player.teamKills * 2,
     }))
-    .sort((a, b) => b.score - a.score || b.kills - a.kills || a.deaths - b.deaths)
+    .sort((a, b) => b.kills - a.kills || b.score - a.score || a.teamKills - b.teamKills || a.deaths - b.deaths)
     .slice(0, 50);
 }
 
