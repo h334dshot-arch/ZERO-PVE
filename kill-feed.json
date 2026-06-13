@@ -1,18 +1,1 @@
-[
-  {
-    "id": "1781284660891-sd4j45",
-    "eventType": "player_killed",
-    "receivedAt": "2026-06-12T17:17:40.891Z",
-    "timestamp": "1781284660",
-    "killerName": "World",
-    "killerGUID": "World",
-    "victimName": "H334DSHOT",
-    "victimGUID": "d0de2e97-cbeb-4d9b-a8cb-80065f6e1eb7",
-    "weapon": "Unknown",
-    "vehicleName": "",
-    "distance": "0.00",
-    "teamKill": false,
-    "friendlyFire": false,
-    "uptimeSeconds": 630
-  }
-]
+[]
