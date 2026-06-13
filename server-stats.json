@@ -1,12 +1,12 @@
 {
-  "map": "Unknown",
-  "operation": "Unknown",
-  "sessionKey": "unknown",
-  "fps": 61,
-  "ai": 47,
+  "map": "ZERO GoldenGate PvE",
+  "operation": "ZERO GoldenGate PvE",
+  "sessionKey": "zero goldengate pve",
+  "fps": 60,
+  "ai": 32,
   "vehicles": 4,
-  "uptime_seconds": 1165,
-  "uptime": "0h19m",
-  "updatedAt": "18:36",
+  "uptime_seconds": 424,
+  "uptime": "0h07m",
+  "updatedAt": "18:49",
   "players": []
 }
