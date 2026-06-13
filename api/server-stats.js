@@ -164,8 +164,13 @@ function normalizeKill(input) {
   const victimName = String(body.victimName || body.victim_name || 'Unknown');
   const victimGUID = String(body.victimGUID || body.victim_guid || '');
   const suicide = isSamePlayer(killerGUID, victimGUID, killerName, victimName);
-  const teamKill = parseBool(body.teamKill ?? body.team_kill);
-  const friendlyFire = parseBool(body.friendlyFire ?? body.friendly_fire);
+  const friendlyFire = parseBool(
+    body.friendlyFire ?? body.friendly_fire ?? body.isFriendlyFire ?? body.is_friendly_fire
+  );
+  const teamKill =
+    parseBool(body.teamKill ?? body.team_kill ?? body.teamkill ?? body.tk ?? body.isTeamKill ?? body.is_team_kill) ||
+    friendlyFire ||
+    looksLikeTeamKill(body, victimName);
 
   return {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -198,6 +203,21 @@ function parseBool(value) {
     return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on';
   }
   return false;
+}
+
+function looksLikeTeamKill(body, victimName) {
+  const weapon = normalizeActor(body.weapon);
+  const victim = normalizeActor(victimName || body.victimName || body.victim_name);
+  const eventKind = normalizeActor(body.eventKind || body.event_kind || body.kind || body.type);
+
+  return (
+    weapon.includes('friendly') ||
+    weapon.includes('team kill') ||
+    victim.includes('friendly') ||
+    eventKind.includes('teamkill') ||
+    eventKind.includes('team_kill') ||
+    eventKind === 'tk'
+  );
 }
 
 function normalizeActor(value) {

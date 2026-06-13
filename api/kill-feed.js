@@ -98,6 +98,31 @@ function isSuicide(event) {
   return Boolean(killerName && victimName && killerName === victimName && killerName !== 'ai' && killerName !== 'world');
 }
 
+function parseBool(value) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value !== 0;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on';
+  }
+  return false;
+}
+
+function isTeamKill(event) {
+  if (!event) return false;
+
+  const weapon = normalizeActor(event.weapon);
+  const victim = normalizeActor(event.victimName);
+
+  return (
+    parseBool(event.teamKill ?? event.team_kill ?? event.teamkill ?? event.tk ?? event.isTeamKill ?? event.is_team_kill) ||
+    parseBool(event.friendlyFire ?? event.friendly_fire ?? event.isFriendlyFire ?? event.is_friendly_fire) ||
+    weapon.includes('friendly') ||
+    weapon.includes('team kill') ||
+    victim.includes('friendly')
+  );
+}
+
 function getPlayerKey(guid, name) {
   if (!isPlayer(guid, name)) return '';
   return guid || name || '';
@@ -131,7 +156,9 @@ function buildRanking(feed, days) {
     const victimKey = getPlayerKey(event.victimGUID, event.victimName);
     const suicide = isSuicide(event);
 
-    if (killerKey && !event.teamKill && !suicide) {
+    const teamKill = isTeamKill(event);
+
+    if (killerKey && !teamKill && !suicide) {
       const killer = getOrCreatePlayer(players, killerKey, event.killerName, event.killerGUID);
       killer.kills += 1;
     }
@@ -141,7 +168,7 @@ function buildRanking(feed, days) {
       victim.deaths += 1;
     }
 
-    if (killerKey && event.teamKill) {
+    if (killerKey && teamKill) {
       const killer = getOrCreatePlayer(players, killerKey, event.killerName, event.killerGUID);
       killer.teamKills += 1;
     }
