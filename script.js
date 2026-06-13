@@ -7,9 +7,10 @@ async function loadServerStats(){
 
         const data = await response.json();
 
-        if(data.map){
+        const operation = data.operation || data.operationName || data.map;
+        if(operation){
             const op = document.getElementById("operationName");
-            if(op) op.textContent = String(data.map).toUpperCase();
+            if(op) op.textContent = String(operation).toUpperCase();
         }
 
         if(Array.isArray(data.players)){

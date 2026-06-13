@@ -295,3 +295,22 @@
         margin-top:8px;
     }
 }
+
+.hero-status{
+    grid-template-columns:minmax(160px,1fr) minmax(160px,1fr) minmax(230px,1.4fr);
+}
+
+#operationName{
+    display:block;
+    color:var(--gold2);
+    font-size:clamp(18px,2vw,25px);
+    line-height:1.05;
+    white-space:normal;
+    overflow-wrap:anywhere;
+}
+
+@media(max-width:950px){
+    .hero-status{
+        grid-template-columns:1fr;
+    }
+}

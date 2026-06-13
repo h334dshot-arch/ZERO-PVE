@@ -14,12 +14,15 @@ function setCors(res) {
 
 function normalizeStats(input) {
   const body = input && typeof input === 'object' ? input : {};
+  const operation = normalizeOperationName(body.operation || body.operationName || body.map || body.world || body.mission);
   const players = Array.isArray(body.players)
     ? body.players.map((p) => String(p)).filter(Boolean).slice(0, 128)
     : [];
 
   return {
-    map: String(body.map || body.world || body.mission || 'Unknown'),
+    map: operation,
+    operation,
+    sessionKey: normalizeSessionKey(operation),
     fps: Number.isFinite(Number(body.fps)) ? Math.round(Number(body.fps)) : 0,
     ai: Number.isFinite(Number(body.ai ?? body.ai_characters)) ? Math.round(Number(body.ai ?? body.ai_characters)) : 0,
     vehicles: Number.isFinite(Number(body.vehicles ?? body.registered_vehicles))
@@ -62,6 +65,16 @@ function formatUptime(seconds) {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   return `${hours}h${String(minutes).padStart(2, '0')}m`;
+}
+
+function normalizeOperationName(value) {
+  const operation = String(value || '').trim();
+  if (!operation || operation.toLowerCase() === 'unknown') return 'Unknown';
+  return operation;
+}
+
+function normalizeSessionKey(value) {
+  return normalizeOperationName(value).trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
 async function githubRequest(url, options = {}) {
@@ -258,7 +271,9 @@ function shouldResetKillFeed(previousStats, nextStats) {
     return true;
   }
 
-  if (isKnownMap(previousStats.map) && isKnownMap(nextStats.map) && previousStats.map !== nextStats.map) {
+  const previousSession = normalizeSessionKey(previousStats.sessionKey || previousStats.operation || previousStats.map);
+  const nextSession = normalizeSessionKey(nextStats.sessionKey || nextStats.operation || nextStats.map);
+  if (isKnownMap(previousSession) && isKnownMap(nextSession) && previousSession !== nextSession) {
     return true;
   }
 
